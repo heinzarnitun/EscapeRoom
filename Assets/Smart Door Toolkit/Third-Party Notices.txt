@@ -1,0 +1,16 @@
+Third-Party Notices
+
+This asset package contains third-party textures that are licensed under CC0 (Public Domain).  
+
+1. Textures from CC0 Textures and Sharetextures
+
+   License: CC0 (Creative Commons Zero)  
+
+   Textures used: black_metal-4K (https://cc0-textures.com/t/st-black-metal)
+		  Steel (https://www.sharetextures.com/textures/metal/steel)
+		  Fence 3 (https://www.sharetextures.com/textures/metal/fence_3)
+		  Black Metal 2 (https://cc0-textures.com/t/st-black-metal-2)
+		  Black Metal 3 (https://cc0-textures.com/t/st-black-metal-3)
+		  American Walnut 1 (https://cc0-textures.com/t/st-american-walnut-1)
+
+These assets are free for personal and commercial use with no attribution required.  
