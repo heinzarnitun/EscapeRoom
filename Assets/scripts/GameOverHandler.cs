@@ -6,6 +6,7 @@ public class GameOverHandler : MonoBehaviour
 {
     public GameObject groundCube;                // assign ground cube in inspector
     public TextMeshProUGUI gameOverText;         // assign UI text in inspector
+    public AudioSource gameOverAudioSource;      // assign game over sound in inspector
 
     void Update()
     {
@@ -17,6 +18,12 @@ public class GameOverHandler : MonoBehaviour
 
     public void TriggerGameOver()
     {
+        // Play game over sound
+        if (gameOverAudioSource != null)
+        {
+            gameOverAudioSource.Play();
+        }
+
         // Disable the ground
         if (groundCube != null)
         {
@@ -58,14 +65,12 @@ public class GameOverHandler : MonoBehaviour
                 rb.useGravity = true;
                 rb.constraints = RigidbodyConstraints.None;
 
-                // Very slow downward velocity and minimal side movement
                 Vector3 randomVelocity = new Vector3(
                     Random.Range(-0.1f, 0.1f),
                     -1f,
                     Random.Range(-0.1f, 0.1f));
                 rb.velocity = randomVelocity;
 
-                // Very small torque for subtle spinning
                 Vector3 randomTorque = new Vector3(
                     Random.Range(-1f, 1f),
                     Random.Range(-1f, 1f),
@@ -77,7 +82,6 @@ public class GameOverHandler : MonoBehaviour
 
     private IEnumerator ShowGameOverMessageThenQuit()
     {
-        // Wait 2 seconds before showing the GAME OVER text
         yield return new WaitForSeconds(2f);
 
         if (gameOverText != null)
@@ -86,10 +90,8 @@ public class GameOverHandler : MonoBehaviour
             gameOverText.text = "GAME OVER!";
         }
 
-        // Wait 3 more seconds (total of 5s from trigger)
         yield return new WaitForSeconds(3f);
 
-        // Stop play mode or quit app
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

@@ -6,16 +6,22 @@ TagManager:
   tags:
   - Ball
   - NotFallable
+  - Trigger
+  - Fruit
+  - Banana
+  - Other
+  - Pineapple
+  - Coconut
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Brick
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Environment
+  - fruitLayer
+  - playerLayer
   - 
   - 
   - 

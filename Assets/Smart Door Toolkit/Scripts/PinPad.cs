@@ -11,6 +11,8 @@ namespace FMS_SmartDoorToolkit
         [Header("Audio & UI")]
         public AudioSource successAudioSource;   // Assign success sound in inspector
         public AudioSource failAudioSource;      // Assign fail sound in inspector
+        public AudioSource buttonPressAudioSource; // NEW: Button press sound
+
         public TextMeshPro pinDisplay;           // Small display for PIN digits
         public TMPro.TextMeshProUGUI notificationText;  // Big notification text for messages
 
@@ -30,13 +32,11 @@ namespace FMS_SmartDoorToolkit
             if (pinDisplay != null)
                 pinDisplay.gameObject.SetActive(false);
             if (notificationText != null)
-{
-    notificationText.text = ""; // ← clear any leftover text content at start
-    notificationText.gameObject.SetActive(false);
-}
+            {
+                notificationText.text = "";
+                notificationText.gameObject.SetActive(false);
+            }
 
-
-            // NEW: Subscribe to countdown timer event if assigned
             if (countdownTimer != null)
             {
                 countdownTimer.OnTimeExpired += OnTimeExpired;
@@ -47,7 +47,6 @@ namespace FMS_SmartDoorToolkit
             }
         }
 
-        // NEW: Unsubscribe on destroy to prevent memory leaks
         private void OnDestroy()
         {
             if (countdownTimer != null)
@@ -56,7 +55,6 @@ namespace FMS_SmartDoorToolkit
             }
         }
 
-        // NEW: This method is called when timer expires
         private void OnTimeExpired()
         {
             Debug.Log("Time expired! Triggering Game Over.");
@@ -68,6 +66,7 @@ namespace FMS_SmartDoorToolkit
 
         public void OnButtonPressed(string value)
         {
+            buttonPressAudioSource?.Play();  // Play button sound
 
             if (doorSystem == null)
             {
@@ -81,6 +80,8 @@ namespace FMS_SmartDoorToolkit
 
         public void OnClearPressed()
         {
+            buttonPressAudioSource?.Play();  // Play button sound
+
             doorSystem.ClearPin();
             if (pinDisplay != null)
             {
@@ -91,6 +92,8 @@ namespace FMS_SmartDoorToolkit
 
         public void OnEnterPressed()
         {
+            buttonPressAudioSource?.Play();  // Play button sound
+
             if (doorSystem == null) return;
 
             if (doorSystem.CheckPinMatch())
@@ -101,30 +104,30 @@ namespace FMS_SmartDoorToolkit
                 pinDisplay.gameObject.SetActive(true);
 
                 StartCoroutine(LoadSceneAfterWin());
-
             }
             else
             {
                 failAudioSource?.Play();
-ShowNotification("Incorrect PIN. One minute deducted.");
+                ShowNotification("Incorrect PIN. One minute deducted.");
 
-if (countdownTimer != null)
-{
-    countdownTimer.DeductTime(60f); // Deduct 60 seconds = 1 minute
-}
-else
-{
-    Debug.LogWarning("CountdownTimer reference not assigned in PinPad.");
-}
+                if (countdownTimer != null)
+                {
+                    countdownTimer.DeductTime(60f);
+                }
+                else
+                {
+                    Debug.LogWarning("CountdownTimer reference not assigned in PinPad.");
+                }
 
-pinDisplay.text = "Incorrect";
-pinDisplay.gameObject.SetActive(true);
-
+                pinDisplay.text = "Incorrect";
+                pinDisplay.gameObject.SetActive(true);
             }
         }
 
         public void OnLockPressed()
         {
+            buttonPressAudioSource?.Play();  // Play button sound
+
             doorSystem.LockDoor();
             ShowNotification("Door Locked");
             UpdatePinDisplay();
@@ -140,38 +143,35 @@ pinDisplay.gameObject.SetActive(true);
         }
 
         private void ShowNotification(string message)
-{
-    if (notificationText == null)
-    {
-        Debug.Log(message);
-        return;
-    }
+        {
+            if (notificationText == null)
+            {
+                Debug.Log(message);
+                return;
+            }
 
-    StopAllCoroutines();
+            StopAllCoroutines();
 
-    notificationText.text = ""; // ← force clear first  
-    notificationText.gameObject.SetActive(false); // ← reset visibility
+            notificationText.text = "";
+            notificationText.gameObject.SetActive(false);
 
-    notificationText.text = message;
-    notificationText.gameObject.SetActive(true);
+            notificationText.text = message;
+            notificationText.gameObject.SetActive(true);
 
-    StartCoroutine(HideNotificationAfterDelay());
-}
+            StartCoroutine(HideNotificationAfterDelay());
+        }
 
-private IEnumerator HideNotificationAfterDelay()
-{
-    yield return new WaitForSeconds(1f);
-    notificationText.gameObject.SetActive(false);
-    notificationText.text = "";
-}
+        private IEnumerator HideNotificationAfterDelay()
+        {
+            yield return new WaitForSeconds(1f);
+            notificationText.gameObject.SetActive(false);
+            notificationText.text = "";
+        }
 
         private IEnumerator LoadSceneAfterWin()
-{
-    yield return new WaitForSeconds(5f);
-
-    // Replace "NextSceneName" with your actual scene name
-    UnityEngine.SceneManagement.SceneManager.LoadScene("Room2");
-}
-
+        {
+            yield return new WaitForSeconds(5f);
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Room2");
+        }
     }
 }

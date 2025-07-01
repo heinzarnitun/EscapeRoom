@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Room2.unity
     guid: a727fea0e70fd4ef8b73777db59c4f83
+  - enabled: 1
+    path: Assets/Room3.unity
+    guid: e21f31e7a3e0140b3a5ba71ea2088fde
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 94ab1155f18df4fc894ece6e311e9e6a, type: 2}
     xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 52b7777f11866455bac13e19e7738beb, type: 2}
