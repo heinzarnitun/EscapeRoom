@@ -18,6 +18,8 @@ public class TicTacToeManager : MonoBehaviour
 public GameObject finalFireObject;
 public AudioSource finalBgm;
 
+[Header("Croupier Character")]
+public Animator croupierAnimator;
 
     [Header("Audio Sources")]
     public AudioSource playerWinSound;
@@ -48,7 +50,9 @@ public AudioSource finalBgm;
     private bool playerWonFinal = false;
 
     private Color defaultColor = Color.black;
-    private Color winColor = Color.green;
+    private Color computerWinColor = Color.red;
+private Color playerWinColor = Color.green;
+
 
     private void Start()
     {
@@ -56,6 +60,8 @@ public AudioSource finalBgm;
 {
     finalFireObject.SetActive(false);
 }
+
+
 
         for (int i = 0; i < buttons.Length; i++)
         {
@@ -136,11 +142,12 @@ public AudioSource finalBgm;
         if (gameOver || !playerTurn || board[index] != '\0') return;
 
         MakeMove(index, 'X');
-        if (CheckWin('X'))
-        {
-            PlayerWinsRound();
-            return;
-        }
+        if (CheckWin('X', playerWinColor))
+{
+    PlayerWinsRound();
+    return;
+}
+
         else if (CheckDraw())
         {
             DrawRound();
@@ -154,16 +161,19 @@ public AudioSource finalBgm;
 
     private void ComputerMove()
     {
+        croupierAnimator.SetTrigger("Thinking");
+
         if (gameOver || finalGameOver) return;
 
         int move = FindBestMove();
         MakeMove(move, 'O');
 
-        if (CheckWin('O'))
-        {
-            ComputerWinsRound();
-            return;
-        }
+        if (CheckWin('O', computerWinColor))
+{
+    ComputerWinsRound();
+    return;
+}
+
         else if (CheckDraw())
         {
             DrawRound();
@@ -215,29 +225,30 @@ public AudioSource finalBgm;
         buttons[index].interactable = false;
     }
 
-    private bool CheckWin(char playerChar)
+    private bool CheckWin(char playerChar, Color winTextColor)
+{
+    int[,] wins = new int[,]
     {
-        int[,] wins = new int[,]
-        {
-            {0,1,2}, {3,4,5}, {6,7,8},
-            {0,3,6}, {1,4,7}, {2,5,8},
-            {0,4,8}, {2,4,6}
-        };
+        {0,1,2}, {3,4,5}, {6,7,8},
+        {0,3,6}, {1,4,7}, {2,5,8},
+        {0,4,8}, {2,4,6}
+    };
 
-        for (int i = 0; i < wins.GetLength(0); i++)
-        {
-            int a = wins[i, 0];
-            int b = wins[i, 1];
-            int c = wins[i, 2];
+    for (int i = 0; i < wins.GetLength(0); i++)
+    {
+        int a = wins[i, 0];
+        int b = wins[i, 1];
+        int c = wins[i, 2];
 
-            if (board[a] == playerChar && board[b] == playerChar && board[c] == playerChar)
-            {
-                HighlightWin(a, b, c);
-                return true;
-            }
+        if (board[a] == playerChar && board[b] == playerChar && board[c] == playerChar)
+        {
+            HighlightWin(a, b, c, winTextColor);
+            return true;
         }
-        return false;
     }
+    return false;
+}
+
 
     private bool CheckDraw()
     {
@@ -248,15 +259,18 @@ public AudioSource finalBgm;
         return true;
     }
 
-    private void HighlightWin(int a, int b, int c)
-    {
-        buttonTexts[a].color = winColor;
-        buttonTexts[b].color = winColor;
-        buttonTexts[c].color = winColor;
-    }
+    private void HighlightWin(int a, int b, int c, Color color)
+{
+    buttonTexts[a].color = color;
+    buttonTexts[b].color = color;
+    buttonTexts[c].color = color;
+}
+
 
     private void PlayerWinsRound()
     {
+        croupierAnimator.SetTrigger("Grief");
+
         playerScore++;
         gameMessage3.text = "Player won this round!";
         if (playerWinSound != null) playerWinSound.Play();
@@ -266,6 +280,8 @@ public AudioSource finalBgm;
 
     private void ComputerWinsRound()
     {
+        croupierAnimator.SetTrigger("Clap");
+
         computerScore++;
         gameMessage3.text = "Master won this round! -2 mins penalty.";
         if (playerLoseSound != null) playerLoseSound.Play();
@@ -332,6 +348,8 @@ public AudioSource finalBgm;
 
     if (playerWonFinal)
     {
+            croupierAnimator.SetTrigger("Grief");
+
         // Player won: make sure fire is off
         if (finalFireObject != null)
             finalFireObject.SetActive(false);
@@ -342,6 +360,9 @@ public AudioSource finalBgm;
     }
     else
     {
+            croupierAnimator.SetTrigger("Standup");
+            croupierAnimator.SetTrigger("ShakeHead");
+
         // Player lost: enable fire effect
         if (finalFireObject != null)
             finalFireObject.SetActive(true);
@@ -349,7 +370,7 @@ public AudioSource finalBgm;
     {
         finalBgm.Play();
     }
-    
+
     }
 
     

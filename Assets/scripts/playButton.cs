@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class PlayButtonInteractionTester : MonoBehaviour
+public class PlayButtonInteraction : MonoBehaviour
 {
     private XRBaseInteractable interactable;
 
@@ -9,6 +9,9 @@ public class PlayButtonInteractionTester : MonoBehaviour
     public GameObject ticTacToePanel;
     public Transform playerHead;
     public float panelDistance = 2.0f;
+
+    [Header("Croupier Character")]
+public Animator croupierAnimator;
 
     void Awake()
     {
@@ -50,5 +53,7 @@ public class PlayButtonInteractionTester : MonoBehaviour
             // Show the panel
             ticTacToePanel.SetActive(true);
         }
+                croupierAnimator.SetTrigger("Yell");
+
     }
 }
